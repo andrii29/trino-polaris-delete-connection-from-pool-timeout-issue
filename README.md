@@ -10,10 +10,9 @@ docker compose up -d
 ## 2. Create the table and generate 1000 partitions
 
 [load.py](./load.py) uses the [Python Trino client](https://github.com/trinodb/trino-python-client)
-over a single reused connection — no per-statement `docker exec`/CLI startup,
-so it runs far faster than a shell loop. Each `INSERT` is still its own Iceberg
-commit → its own Polaris metadata round-trip, which is what exercises the
-connection pool and reproduces the timeout.
+to run 1000 `INSERT`s, building a table with 1000 partitions. This just
+prepares the table — the timeout is reproduced later, after the table is
+dropped.
 
 The `loadgen` service (defined in `docker-compose.yaml`) runs on the compose
 network with the `trino` client pre-installed and reaches Trino at
