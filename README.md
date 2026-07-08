@@ -3,7 +3,7 @@ under many rapid Iceberg commits driven from Trino.
 
 ## 1. Start the stack
 
-```
+```bash
 docker compose up -d
 ```
 
@@ -19,18 +19,29 @@ The `loadgen` service (defined in `docker-compose.yaml`) runs on the compose
 network with the `trino` client pre-installed and reaches Trino at
 `trino-coordinator:8080`. Trigger the load with:
 
-```
+```bash
 docker compose exec loadgen python /load.py
 ```
 
 
 ## 3. Inspect and tear down
-Now delete partitioned table and then try to run simple queries
+Now delete the partitioned table
 
+```bash
+docker compose exec -it trino-coordinator trino --execute 'DROP TABLE IF EXISTS iceberg.test.orders;'
 ```
-docker compose exec -it trino-coordinator trino --execute 'DROP TABLE IF EXISTS iceberg.test.orders; CREATE TABLE IF NOT EXISTS iceberg.test.orders2 AS SELECT * FROM tpch.tiny.orders; SELECT * FROM iceberg.test.orders2 LIMIT 5; DROP TABLE IF EXISTS iceberg.test.orders2;'
+
+Wait a few seconds or minutes and then try to run simple queries
+
+```bash
+docker compose exec -it trino-coordinator trino --execute 'CREATE TABLE IF NOT EXISTS iceberg.test.orders2 AS SELECT * FROM tpch.tiny.orders; SELECT * FROM iceberg.test.orders2 LIMIT 5; DROP TABLE IF EXISTS iceberg.test.orders2;'
+```
+
+Check Polaris logs and drop the stack
+
+```bash
 docker compose logs polaris
 docker compose down
 ```
 
-You can find example polaris log at [error.log](./error.log)
+You can find an example Polaris log at [error.log](./error.log)
