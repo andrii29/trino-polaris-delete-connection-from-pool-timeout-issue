@@ -1,6 +1,3 @@
-Reproduces a Polaris "unable to obtain / delete connection from pool" timeout
-under many rapid Iceberg commits driven from Trino.
-
 ## 1. Start the stack
 
 ```bash
