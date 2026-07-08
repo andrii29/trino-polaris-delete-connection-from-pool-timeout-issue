@@ -350,3 +350,14 @@ services:
       - .env
     depends_on:
       - polaris
+
+  loadgen:
+    image: python:3.12-slim
+    volumes:
+      - ./load.py:/load.py:ro
+    depends_on:
+      - trino-coordinator
+    command:
+      - sh
+      - -c
+      - "pip install --quiet trino==0.338.0 && sleep infinity"
